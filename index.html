@@ -8,7 +8,8 @@
   <title>烽火侨批 · 再送台山</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="mobile.css" media="(max-width: 959px)">
-  <link rel="preload" href="assets/turn-paper.webp" as="image">
+  <link rel="preload" href="assets/envelope-mobile.webp" as="image" media="(max-width: 959px)">
+  <link rel="preload" href="assets/envelope.webp" as="image" media="(min-width: 960px)">
   <script defer src="scene-motion.js"></script>
   <script defer src="exhibit.js"></script>
   <script defer src="records.js"></script>
@@ -104,8 +105,8 @@
           <article class="letter-card">
             <p class="letter-meta"><time datetime="1936-02-09">1936.02.09</time><span>澳大利亚 <span class="route-arrow" aria-hidden="true">→</span> 台山</span></p>
             <h3>邝修录致儿子邝振成</h3>
-            <button class="record-trigger" type="button" aria-haspopup="dialog" aria-label="放大邝修录家书与释文" data-board="assets/letters/1936-board.jpg">
-              <span class="document-mount"><img src="assets/letters/1936-document.webp" width="1096" height="500" alt="展板刊载的 1936 年家书与信封正反面"></span>
+            <button class="record-trigger" type="button" aria-haspopup="dialog" aria-label="放大邝修录家书与释文" data-document="assets/letters/1936-document.webp" data-board="assets/letters/1936-board.jpg">
+              <span class="document-mount"><img src="assets/letters/1936-preview.webp" width="850" height="388" loading="lazy" decoding="async" alt="展板刊载的 1936 年家书与信封正反面"></span>
               <span class="record-caption"><span>家书与信封 · 放大看释文</span><span aria-hidden="true">↗</span></span>
             </button>
             <p class="letter-context">在澳大利亚，一位父亲从时局说到家事，叮嘱儿子及早准备粮食。</p>
@@ -120,8 +121,8 @@
           <article class="letter-card">
             <p class="letter-meta"><time datetime="1941-03-10">1941.03.10</time><span>台山 <span class="route-arrow" aria-hidden="true">→</span> 美国</span></p>
             <h3>桂明致美国华侨亲友</h3>
-            <button class="record-trigger" type="button" aria-haspopup="dialog" aria-label="放大桂明家书与释文" data-board="assets/letters/1941-board.jpg">
-              <span class="document-mount"><img src="assets/letters/1941-document.webp" width="700" height="443" alt="展板刊载的 1941 年桂明家书，两张红格信笺"></span>
+            <button class="record-trigger" type="button" aria-haspopup="dialog" aria-label="放大桂明家书与释文" data-document="assets/letters/1941-document.webp" data-board="assets/letters/1941-board.jpg">
+              <span class="document-mount"><img src="assets/letters/1941-preview.webp" width="650" height="411" loading="lazy" decoding="async" alt="展板刊载的 1941 年桂明家书，两张红格信笺"></span>
               <span class="record-caption"><span>放大原件与释文</span><span aria-hidden="true">↗</span></span>
             </button>
             <p class="letter-context">在台山，桂明写下村民逃难、日军入村劫掠和家中遭遇。</p>
@@ -160,8 +161,8 @@
 
           <figure class="atlas" id="atlas" data-step="0" aria-labelledby="map-caption">
             <div class="map-paper">
-              <img class="map-base" src="assets/atlas.webp" alt="">
-              <canvas class="map-ink" id="map-ink" width="1000" height="584" aria-hidden="true"></canvas>
+              <img class="map-base" src="assets/atlas.webp" loading="lazy" decoding="async" alt="">
+              <canvas class="map-ink" id="map-ink" width="1" height="1" aria-hidden="true"></canvas>
               <span class="map-note map-atlantic" aria-hidden="true">大 西 洋</span>
               <span class="map-note map-indian" aria-hidden="true">印 度 洋</span>
               <span class="map-city city-ny">纽约</span>
@@ -171,7 +172,7 @@
               <div class="stamp-slot" aria-hidden="true"><div class="stamp" id="map-stamp"></div></div>
               <div class="inset" id="delta-inset" aria-label="珠江口局部。广州至台山的再次投递。">
                 <span class="inset-region">珠江口 · 局部示意</span>
-                <img src="assets/delta.webp" alt="">
+                <img src="assets/delta.webp" loading="lazy" decoding="async" alt="">
                 <div class="inset-line"></div>
                 <span class="inset-point inset-gz">广州</span>
                 <span class="inset-point inset-ts">台山</span>

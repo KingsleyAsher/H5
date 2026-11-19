@@ -49,6 +49,7 @@ const chapterFilm = document.querySelector('#chapter-film');
 const filmScrim = chapterFilm.querySelector('.film-scrim');
 const filmObjects = chapterFilm.querySelector('.film-objects');
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const compactScreen = matchMedia('(max-width: 959px)');
 const easeOut = 'cubic-bezier(.23, 1, .32, 1)';
 
 let currentStep = 0;
@@ -77,13 +78,14 @@ function requestedChapter() {
 function showScreen(screen, focusHeading = false) {
   const previous = exhibit.dataset.screen;
   cancelAnimationFrame(routeFrame);
+  exhibit.dataset.screen = screen;
+  for (const [name, chapter] of chapters) chapter.hidden = name !== screen;
   if (screen === 'journey') {
+    fitMapInk();
     if (previous !== 'journey' && currentStep !== 0) chooseEvent(0, false);
     else drawRoute(events[currentStep].distance);
   }
 
-  exhibit.dataset.screen = screen;
-  for (const [name, chapter] of chapters) chapter.hidden = name !== screen;
   for (const link of navigation) {
     if (link.hash === `#${screen}`) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
@@ -139,7 +141,13 @@ function turnToChapter() {
   if (activeCut || requested === previous) return;
 
   const direction = chapterOrder.indexOf(requested) > chapterOrder.indexOf(previous) ? 1 : -1;
-  activeCut = { direction, animations: [], cleanups: [], scrim: filmScrim, objects: filmObjects };
+  activeCut = { direction, compact: compactScreen.matches, animations: [], cleanups: [], scrim: filmScrim, objects: filmObjects };
+  if (requested === 'letters') {
+    // Start the smaller photos under the outgoing scene so they are ready for the reveal.
+    for (const image of chapters.get('letters').querySelectorAll('.document-mount img')) image.loading = 'eager';
+  } else if (requested === 'journey') {
+    atlas.querySelector('.map-base').loading = 'eager';
+  }
   chapterFilm.hidden = false;
   void playChapterCut(activeCut, previous, requested);
 }
@@ -196,10 +204,25 @@ const canvas = document.querySelector('#map-ink');
 const ink = canvas.getContext('2d');
 const mapWidth = 1000;
 const mapHeight = 584;
-const density = Math.min(window.devicePixelRatio || 1, 2);
-canvas.width = mapWidth * density;
-canvas.height = mapHeight * density;
-ink.scale(density, density);
+
+function fitMapInk() {
+  const displayWidth = canvas.clientWidth;
+  if (!displayWidth) return false;
+  const ratio = Math.min(window.devicePixelRatio || 1, compactScreen.matches ? 1.5 : 2);
+  const width = Math.min(mapWidth * 2, Math.round(displayWidth * ratio));
+  if (canvas.width === width) return false;
+  canvas.width = width;
+  canvas.height = Math.round(width * mapHeight / mapWidth);
+  ink.setTransform(width / mapWidth, 0, 0, canvas.height / mapHeight, 0, 0);
+  return true;
+}
+
+function resizeMapInk() {
+  if (fitMapInk()) drawRoute(drawnDistance);
+}
+
+if ('ResizeObserver' in window) new ResizeObserver(resizeMapInk).observe(canvas);
+else window.addEventListener('resize', resizeMapInk);
 
 function project(lon, lat) {
   return [30 + (lon + 127) / 277 * 940, 30 + (77 - lat) / 115 * 495];
@@ -224,10 +247,17 @@ function cubicPoint(leg, t) {
 }
 
 function drawLeg(leg, amount) {
-  const sampleCount = Math.ceil(amount * (leg.dashed ? 80 : 24));
   ink.beginPath();
   ink.moveTo(...leg.start);
-  for (let i = 1; i <= sampleCount; i += 1) ink.lineTo(...cubicPoint(leg, amount * i / sampleCount));
+  if (amount === 1) {
+    ink.bezierCurveTo(...leg.bend[0], ...leg.bend[1], ...leg.end);
+  } else {
+    // A de Casteljau subdivision gives the portion at t without rebuilding a polyline.
+    const first = leg.start.map((value, axis) => value + (leg.bend[0][axis] - value) * amount);
+    const middle = leg.bend[0].map((value, axis) => value + (leg.bend[1][axis] - value) * amount);
+    const second = first.map((value, axis) => value + (middle[axis] - value) * amount);
+    ink.bezierCurveTo(...first, ...second, ...cubicPoint(leg, amount));
+  }
   ink.setLineDash(leg.dashed ? [7, 8] : []);
   ink.strokeStyle = '#893021';
   ink.lineWidth = leg.dashed ? 2.8 : 3.8;

@@ -80,7 +80,7 @@ function showRecordPicture(mode) {
   const showingBoard = imageView === 'board';
   readerImage.alt = showingBoard ? `${readerTitle.textContent}的展板全图` : thumbnail.alt;
   imageNote.textContent = showingBoard ? '展览现场的整张照片。可缩放、拖动查看展签。' : '展板中家书的局部。可缩放、拖动查看笔迹。';
-  readerImage.src = showingBoard ? activeRecord.dataset.board : thumbnail.getAttribute('src');
+  readerImage.src = showingBoard ? activeRecord.dataset.board : activeRecord.dataset.document;
   setMagnification(1, null);
 }
 

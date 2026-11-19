@@ -1,6 +1,7 @@
 (() => {
   const surfaces = [...document.querySelectorAll('.paper-relief')];
   const cachedSizes = new WeakMap();
+  const compactScreen = matchMedia('(max-width: 959px)');
   let fontsReady = false;
 
   function lineOffset(node, paper) {
@@ -43,17 +44,32 @@
     return amount * influence * influence;
   }
 
-  function warpInk(context, source, vertical, horizontal, density) {
+  function warpInk(context, source, vertical, horizontal, density, inkTop) {
     const { width, height, data } = source;
     const result = context.createImageData(width, height);
     const output = result.data;
     const reach = 24 * density;
 
     for (let y = 0; y < height; y++) {
+      const paperY = y + inkTop;
+      const creaseX = vertical[paperY];
       for (let x = 0; x < width; x++) {
+        const target = (y * width + x) * 4;
+        const verticalDistance = x - creaseX;
+        const horizontalDistance = paperY - horizontal[x];
+        if (Math.abs(verticalDistance) >= reach && Math.abs(horizontalDistance) >= reach) {
+          const alpha = data[target + 3];
+          if (!alpha) continue;
+          output[target] = data[target];
+          output[target + 1] = data[target + 1];
+          output[target + 2] = data[target + 2];
+          output[target + 3] = alpha * inkGrain(x, paperY);
+          continue;
+        }
+
         // Sample the pen strokes on the same ridges used to shade the paper.
-        const sourceX = x - shiftInk(x - vertical[y], reach, 7 * density);
-        const sourceY = y - shiftInk(y - horizontal[x], reach, 8.5 * density);
+        const sourceX = x - shiftInk(verticalDistance, reach, 7 * density);
+        const sourceY = y - shiftInk(horizontalDistance, reach, 8.5 * density);
         if (sourceX < 0 || sourceY < 0 || sourceX >= width - 1 || sourceY >= height - 1) continue;
 
         const left = Math.floor(sourceX);
@@ -64,6 +80,7 @@
         const b = a + 4;
         const c = a + width * 4;
         const d = c + 4;
+        if (!(data[a + 3] | data[b + 3] | data[c + 3] | data[d + 3])) continue;
         const aa = data[a + 3] * (1 - dx) * (1 - dy);
         const ab = data[b + 3] * dx * (1 - dy);
         const ac = data[c + 3] * (1 - dx) * dy;
@@ -71,23 +88,26 @@
         const alpha = aa + ab + ac + ad;
         if (alpha < 1) continue;
 
-        const target = (y * width + x) * 4;
         for (let channel = 0; channel < 3; channel++) {
           output[target + channel] = (data[a + channel] * aa + data[b + channel] * ab +
             data[c + channel] * ac + data[d + channel] * ad) / alpha;
         }
-        const grain = ((Math.imul(x + 11, 73856093) ^ Math.imul(y + 17, 19349663)) >>> 0) % 41;
-        output[target + 3] = alpha * (.77 + grain / 210);
+        output[target + 3] = alpha * inkGrain(x, paperY);
       }
     }
-    context.putImageData(result, 0, 0);
+    context.putImageData(result, 0, inkTop);
+  }
+
+  function inkGrain(x, y) {
+    const grain = ((Math.imul(x + 11, 73856093) ^ Math.imul(y + 17, 19349663)) >>> 0) % 41;
+    return .77 + grain / 210;
   }
 
   function drawPaper(canvas) {
     if (!fontsReady) return;
     const paper = canvas.parentElement;
     const { clientWidth, clientHeight } = paper;
-    const density = Math.min(window.devicePixelRatio || 1, 1.65);
+    const density = Math.min(window.devicePixelRatio || 1, compactScreen.matches ? 1.3 : 1.65);
     const width = Math.round(clientWidth * density);
     const height = Math.round(clientHeight * density);
     const size = `${width}x${height}`;
@@ -103,6 +123,8 @@
     canvas.height = height;
     pen.scale(density, density);
     const lines = [...paper.querySelectorAll('[data-paper-ink]')];
+    let inkTop = height;
+    let inkBottom = 0;
 
     for (const line of lines) {
       const style = getComputedStyle(line);
@@ -114,6 +136,8 @@
       const ascent = metrics.fontBoundingBoxAscent ?? metrics.actualBoundingBoxAscent;
       const descent = metrics.fontBoundingBoxDescent ?? metrics.actualBoundingBoxDescent;
       const baseline = box.y + (box.height + (ascent ?? parseFloat(style.fontSize) * .82) - (descent ?? 0)) / 2;
+      inkTop = Math.min(inkTop, (baseline - (metrics.actualBoundingBoxAscent ?? box.height)) * density);
+      inkBottom = Math.max(inkBottom, (baseline + (metrics.actualBoundingBoxDescent ?? box.height)) * density);
       if ('letterSpacing' in pen || spacing === 0) {
         pen.letterSpacing = `${spacing}px`;
         pen.fillText(line.textContent, box.x, baseline);
@@ -142,7 +166,14 @@
     });
 
     const foldDensity = density * Math.min(1, Math.max(.63, clientWidth / 540));
-    warpInk(relief, pen.getImageData(0, 0, width, height), vertical, horizontal, foldDensity);
+    // Read back only the writing and the few extra rows displaced by the fold.
+    const padding = Math.ceil(8.5 * foldDensity) + 3;
+    inkTop = Math.max(0, Math.floor(inkTop) - padding);
+    inkBottom = Math.min(height, Math.ceil(inkBottom) + padding);
+    if (inkBottom > inkTop) {
+      const lettering = pen.getImageData(0, inkTop, width, inkBottom - inkTop);
+      warpInk(relief, lettering, vertical, horizontal, foldDensity, inkTop);
+    }
     shadeFold(relief, vertical, true, foldDensity);
     shadeFold(relief, horizontal, false, foldDensity);
     paper.classList.add('paper-painted');

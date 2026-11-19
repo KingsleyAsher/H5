@@ -27,6 +27,7 @@
   --serif: "Exhibit Song", "Noto Serif SC", "STSong", "SimSun", serif;
   --letter-hand: "Letter Hand", "KaiTi", "STKaiti", serif;
   --ledger-brush: "Ledger Brush", "KaiTi", "STKaiti", serif;
+  --envelope-texture: url("assets/envelope.webp");
   --ease-out: cubic-bezier(.23, 1, .32, 1);
   --ease-in-out: cubic-bezier(.77, 0, .175, 1);
 }
@@ -112,10 +113,10 @@ h1, h2, h3, p, figure, ol { margin: 0; }
 .envelope::after { content: ""; position: absolute; z-index: -1; inset: 1% 0 0 1%; border-radius: 3%; box-shadow: -17px 33px 42px #000b, -6px 13px 13px #000a; }
 .envelope-lining, .envelope-pocket, .envelope-flap, .flap-side { position: absolute; inset: 0; }
 .envelope-lining { z-index: 0; border-radius: 1.9%; inset: 1% 1% .8%; background: linear-gradient(180deg, #2f170894, #2c170839 55%, #4a240566), url("assets/paper.webp") center / cover; }
-.envelope-pocket { z-index: 3; background: url("assets/envelope.webp") center / 100% 100% no-repeat; clip-path: polygon(0 4%, 2% 8%, 48.4% 68.6%, 50.3% 69.5%, 52% 68.3%, 98.5% 8%, 100% 3%, 100% 100%, 0 100%); }
+.envelope-pocket { z-index: 3; background: var(--envelope-texture) center / 100% 100% no-repeat; clip-path: polygon(0 4%, 2% 8%, 48.4% 68.6%, 50.3% 69.5%, 52% 68.3%, 98.5% 8%, 100% 3%, 100% 100%, 0 100%); }
 .envelope-flap { z-index: 4; transform-style: preserve-3d; transform-origin: 50% 1%; transition: transform 520ms var(--ease-in-out), z-index 0s 320ms; }
 .flap-side { clip-path: var(--flap-shape); }
-.flap-front { z-index: 1; backface-visibility: hidden; background: url("assets/envelope.webp") center / 100% 100% no-repeat; }
+.flap-front { z-index: 1; backface-visibility: hidden; background: var(--envelope-texture) center / 100% 100% no-repeat; }
 .flap-back { background: radial-gradient(ellipse at 68% 65%, #6b4c270f, #27110476), url("assets/paper.webp") top / cover; }
 .letter-sheet { --paper-hinge: 42.5%; position: absolute; z-index: 2; inset: 6% 10% 7%; isolation: isolate; display: flex; align-items: flex-start; padding: 4.5% 5%; background: linear-gradient(125deg, #ffefcead, #e6c29082), url("assets/paper.webp") center / cover; color: #392719; box-shadow: 0 9px 22px #21100791; opacity: 0; transform: translateY(10%) scale(.97); transition: transform 430ms var(--ease-out), opacity 140ms var(--ease-out) 180ms; }
 .letter-rules { width: 100%; min-height: 97%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 2px; padding: 2.5% 5%; border-block: 1px solid #93483182; background: repeating-linear-gradient(0deg, transparent 0 2.05em, #9e4a371f 2.05em calc(2.05em + 1px)); }

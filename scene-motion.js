@@ -4,7 +4,8 @@ const playExhibitScene = (() => {
   const pressure = 'cubic-bezier(.2, .63, .25, 1)';
 
   function play(shot, target, frames, duration, easing = drift, delay = 0) {
-    const animation = target.animate(frames, { duration, easing, delay, fill: 'both' });
+    const pace = shot.compact ? .83 : 1;
+    const animation = target.animate(frames, { duration: duration * pace, easing, delay: delay * pace, fill: 'both' });
     shot.animations.push(animation);
     const finished = animation.finished;
     finished.catch(() => {});
@@ -170,8 +171,8 @@ const playExhibitScene = (() => {
       const side = i === 0 ? -1 : 1;
       const edge = side === -1 ? '0 0 0 25%' : '0 25% 0 0';
       return play(shot, card, [
-        { opacity: 0, transform: `perspective(1200px) translate3d(${-side * 68}px, 27px, 0) rotateY(${side * 11}deg) scale(.95)`, clipPath: `inset(${edge})` },
-        { opacity: 1, transform: 'none', clipPath: 'inset(0 0 0 0)' },
+        { opacity: 0, transform: `perspective(1200px) translate3d(${-side * 68}px, 27px, 0) rotateY(${side * 11}deg) scale(.95)`, ...(!shot.compact && { clipPath: `inset(${edge})` }) },
+        { opacity: 1, transform: 'none', ...(!shot.compact && { clipPath: 'inset(0 0 0 0)' }) },
       ], 490, settle, firstDelay + (i === Number(direction < 0) ? 0 : interval));
     }));
   }
@@ -279,9 +280,13 @@ const playExhibitScene = (() => {
     ], 530)]);
 
     const next = reveal();
-    const depart = play(shot, actor.root, [
+    const withdrawn = { ...evidence, x: evidence.x - 34 };
+    const depart = play(shot, actor.root, shot.compact ? [
+      { transform: pose(actor, evidence), opacity: 1 },
+      { transform: pose(actor, withdrawn) + ' scaleX(.08)', opacity: 0 },
+    ] : [
       { transform: pose(actor, evidence), clipPath: 'inset(0)' },
-      { transform: pose(actor, { ...evidence, x: evidence.x - 34 }), clipPath: 'inset(0 100% 0 0)' },
+      { transform: pose(actor, withdrawn), clipPath: 'inset(0 100% 0 0)' },
     ], 285);
     if (next !== 'journey') {
       await Promise.all([depart, lightUp(shot, 365)]);
@@ -292,8 +297,8 @@ const playExhibitScene = (() => {
     const atlas = document.querySelector('#atlas');
     const atlasCenter = center(atlas.getBoundingClientRect());
     const reframe = play(shot, atlas, [
-      { transform: `translate3d(${evidence.x - atlasCenter.x}px, ${evidence.y - atlasCenter.y}px, 0) scale(.93)`, clipPath: 'inset(6% 37% 6% 37%)', opacity: 0 },
-      { transform: 'none', clipPath: 'inset(0)', opacity: 1 },
+      { transform: `translate3d(${evidence.x - atlasCenter.x}px, ${evidence.y - atlasCenter.y}px, 0) scale(${shot.compact ? '.72, .93' : '.93'})`, opacity: 0, ...(!shot.compact && { clipPath: 'inset(6% 37% 6% 37%)' }) },
+      { transform: 'none', opacity: 1, ...(!shot.compact && { clipPath: 'inset(0)' }) },
     ], 620, settle, 210);
     const caption = bringCaption(shot, document.querySelector('.journey-copy'), 430);
     const timeline = bringCaption(shot, document.querySelector('.route-footer'), 550, 8);
@@ -436,8 +441,8 @@ const playExhibitScene = (() => {
         { transform: 'scale(1)' },
       ], 118, pressure),
       play(shot, imprint, [
-        { opacity: 0, clipPath: 'inset(0 0 100% 0)' },
-        { opacity: .92, clipPath: 'inset(0)' },
+        { opacity: 0, ...(!shot.compact && { clipPath: 'inset(0 0 100% 0)' }) },
+        { opacity: .92, ...(!shot.compact && { clipPath: 'inset(0)' }) },
       ], 118, pressure),
     ]);
 

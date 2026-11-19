@@ -2,6 +2,7 @@ html { overscroll-behavior-y: none; }
 body { min-width: 0; }
 
 .exhibit {
+  --envelope-texture: url("assets/envelope-mobile.webp");
   --page-gutter: clamp(16px, 4.65vw, 36px);
   --page-left: max(var(--page-gutter), env(safe-area-inset-left, 0px));
   --page-right: max(var(--page-gutter), env(safe-area-inset-right, 0px));
@@ -12,6 +13,10 @@ body { min-width: 0; }
   overflow-x: hidden;
   overflow: clip;
 }
+
+.exhibit::after { mix-blend-mode: normal; opacity: .055; }
+.film-scrim { background: radial-gradient(ellipse at 53% 48%, #261b13, #100c09 67%, #070605); }
+.scene-detail { box-shadow: 0 10px 24px #0009; }
 
 .masthead, .screen {
   width: calc(100% - var(--page-left) - var(--page-right));
@@ -59,7 +64,13 @@ body { min-width: 0; }
   font-size: 11px;
 }
 .letter-display.is-open figcaption { transform: none; }
+.opening .envelope { transition-duration: 465ms; }
 .letter-display.is-open .envelope { transform: rotate(-3deg) translateY(18%) scale(.84); }
+.envelope::after { box-shadow: -9px 17px 24px #000b, -4px 7px 8px #000a; }
+.opening .envelope-flap { transition-duration: 420ms, 0s; transition-delay: 0s, 260ms; }
+.opening .letter-display.is-open .envelope-flap { transition-delay: 0s, 205ms; }
+.opening .letter-sheet { transition-duration: 350ms, 120ms; transition-delay: 0s, 125ms; }
+.opening .letter-display.is-open .letter-sheet { transition-duration: 470ms, 125ms; transition-delay: 195ms, 190ms; }
 .sheet-date { font-size: clamp(13px, 3.7vw, 18px); }
 .letter-rules strong { font-size: clamp(30px, 8.6vw, 49px); }
 .sheet-destination { font-size: clamp(16px, 4.5vw, 24px); }
@@ -90,6 +101,7 @@ body { min-width: 0; }
 .letter-meta { font-size: 13px; letter-spacing: .035em; }
 .letter-card h3 { margin: 5px 0 9px; font-size: clamp(19px, 5.6vw, 27px); }
 .document-mount { height: clamp(140px, 48vw, 249px); padding: 9px; }
+.document-mount img { filter: none; }
 .record-caption { min-height: 44px; padding-inline: 11px; font-size: 13px; }
 .record-trigger:active .record-caption { background: #bd965e25; }
 .letter-context { margin-top: 8px; font-size: 14px; }
@@ -135,6 +147,7 @@ body { min-width: 0; }
 .archive-display { grid-row: 1; padding-top: clamp(57px, 18vw, 98px); }
 .archive-display .envelope { width: 96%; }
 .archive-seal { font-size: clamp(22px, 6.25vw, 39px); }
+.archive-stamp-shadow { filter: none; background: radial-gradient(ellipse, #32160f, #32160f66 59%, transparent 77%); }
 .archive .archive-lead { font-size: 18px; }
 .archive-actions { margin-top: 17px; }
 .archive-sources { margin-top: 24px; }
