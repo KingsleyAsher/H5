@@ -324,7 +324,8 @@ const playExhibitScene = (() => {
     front.className = 'map-fold-front';
     const verso = document.createElement('div');
     verso.className = 'map-fold-verso';
-    verso.append(packetStock());
+    const paper = packetStock();
+    verso.append(paper);
     for (const panel of [upper, front]) {
       const face = duplicatePaper(atlas);
       face.classList.add('map-fold-face');
@@ -334,7 +335,7 @@ const playExhibitScene = (() => {
     }
     lower.append(front, verso);
     actor.root.append(upper, lower);
-    return { ...actor, upper, lower };
+    return { ...actor, upper, lower, paper };
   }
 
   async function foldAndPackScene(shot, reveal) {
@@ -348,18 +349,20 @@ const playExhibitScene = (() => {
     archive.classList.add('archive-take', 'archive-packing');
     shot.cleanups.push(() => archive.classList.remove('archive-take', 'archive-packing'));
     const aboveTable = { ...start, x: innerWidth * .602, y: innerHeight * .53, width: start.width * .78, height: start.height * .78, angle: -4.5 };
+    const foldDuration = 675;
     const flight = play(shot, folded.root, [
       { transform: pose(folded, start) }, { transform: pose(folded, aboveTable) },
-    ], 620);
+    ], foldDuration);
     const fold = play(shot, folded.lower, [
       { transform: 'rotateX(0deg)' }, { transform: 'rotateX(20deg)', offset: .27 },
-      { transform: 'rotateX(153deg)', offset: .78 }, { transform: 'rotateX(180deg)' },
-    ], 620);
-    await Promise.all([flight, fold, darken(shot, 620)]);
+      { transform: 'rotateX(136deg)', offset: .66 },
+      { transform: 'rotateX(172deg)', offset: .88 }, { transform: 'rotateX(180deg)' },
+    ], foldDuration);
+    await Promise.all([flight, fold, darken(shot, foldDuration)]);
 
     const packetStart = paperGeometry(folded.upper);
     const packet = makeActor(shot, 'loose-packet', packetStart, folded.width, folded.height / 2);
-    packet.root.append(packetStock());
+    packet.root.append(folded.paper);
     folded.root.remove();
     const next = reveal();
     if (next !== 'archive') {
@@ -376,29 +379,32 @@ const playExhibitScene = (() => {
 
     const insert = document.createElement('div');
     insert.className = 'envelope-insert';
-    insert.append(packetStock());
     envelope.append(insert);
-    insert.style.visibility = 'hidden';
     shot.cleanups.push(() => insert.remove());
     const mouth = paperGeometry(insert);
-    const hover = { ...mouth, y: mouth.y - 24, x: mouth.x - 19, angle: mouth.angle - 3 };
+    const hover = { ...mouth, y: mouth.y - Math.min(18, mouth.height * .23) };
     await Promise.all([lightUp(shot, 435), play(shot, packet.root, [
-      { transform: pose(packet, packetStart) }, { transform: pose(packet, hover), offset: .68 },
+      { transform: pose(packet, packetStart) }, { transform: pose(packet, hover), offset: .72 },
       { transform: pose(packet, mouth) },
-    ], 585, settle)]);
+    ], 585)]);
 
-    // Transfer to a real child of the envelope, below its pocket but above its lining.
-    insert.style.visibility = 'visible';
+    // Keep the same paper surface and rendered scale when it moves behind the pocket.
+    Object.assign(folded.paper.style, {
+      width: `${packet.width}px`,
+      height: `${packet.height}px`,
+      transformOrigin: 'top left',
+      transform: `scale(${insert.offsetWidth / packet.width}, ${insert.offsetHeight / packet.height})`,
+    });
+    insert.append(folded.paper);
     packet.root.remove();
     await play(shot, insert, [
-      { transform: 'translateY(0)' }, { transform: 'translateY(159%)', offset: .66 },
-      { transform: 'translateY(202%)' },
-    ], 470, pressure);
+      { transform: 'translateY(0)' }, { transform: 'translateY(202%)' },
+    ], 525);
 
     await play(shot, flap, [
       { transform: 'rotateX(153deg)', zIndex: 1 },
-      { transform: 'rotateX(94deg)', zIndex: 1, offset: .43 },
-      { transform: 'rotateX(85deg)', zIndex: 4, offset: .49 },
+      { transform: 'rotateX(90deg)', zIndex: 1, offset: .48 },
+      { transform: 'rotateX(90deg)', zIndex: 4, offset: .48 },
       { transform: 'rotateX(0deg)', zIndex: 4 },
     ], 555);
     insert.remove();

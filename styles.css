@@ -76,7 +76,7 @@ h1, h2, h3, p, figure, ol { margin: 0; }
 .map-fold-upper { bottom: 50%; overflow: hidden; }
 .map-fold-lower { top: 50%; transform-origin: center top; transform-style: preserve-3d; }
 .map-fold-front, .map-fold-verso { overflow: hidden; backface-visibility: hidden; }
-.map-fold-verso { transform: rotateX(180deg); }
+.map-fold-verso { transform: rotateX(180deg) translateZ(1px); }
 .map-fold-upper > .map-fold-face, .map-fold-front > .map-fold-face { position: absolute; left: 0; max-width: none; margin: 0; transform: none; }
 .map-fold-upper > .map-fold-face { top: 0; }
 .map-fold-front > .map-fold-face { top: -100%; }
