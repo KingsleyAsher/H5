@@ -17,11 +17,16 @@ const playExhibitScene = (() => {
   }
 
   function paperGeometry(node) {
-    const markers = [[0, 0], [100, 0], [0, 100]].map(([x, y]) => {
+    const border = getComputedStyle(node);
+    const left = `calc(0% - ${border.borderLeftWidth})`;
+    const top = `calc(0% - ${border.borderTopWidth})`;
+    const rightEdge = `calc(100% + ${border.borderRightWidth})`;
+    const bottomEdge = `calc(100% + ${border.borderBottomWidth})`;
+    const markers = [[left, top], [rightEdge, top], [left, bottomEdge]].map(([x, y]) => {
       const mark = document.createElement('i');
       mark.className = 'paper-measure';
-      mark.style.left = `${x}%`;
-      mark.style.top = `${y}%`;
+      mark.style.left = x;
+      mark.style.top = y;
       return mark;
     });
     node.append(...markers);
@@ -62,17 +67,28 @@ const playExhibitScene = (() => {
     return copy;
   }
 
-  function mountPaper(shot, source, start, fold) {
+  function mountPaper(shot, source, start, fold, crease = document.createElement('div')) {
     const root = document.createElement('div');
     root.className = 'paper-actor';
-    const hingePosition = parseFloat(getComputedStyle(source).getPropertyValue('--paper-hinge')) / 100;
-    const actor = { root, width: source.offsetWidth, height: source.offsetHeight, hinge: hingePosition, sides: [] };
-    Object.assign(root.style, { width: `${actor.width}px`, height: `${actor.height}px`, transform: pose(actor, fold ? alignSpine(actor, start) : start) });
+    const material = getComputedStyle(source);
+    const hingePosition = parseFloat(material.getPropertyValue('--paper-hinge')) / 100;
+    const shadow = document.createElement('div');
+    shadow.className = 'paper-actor-shadow';
+    shadow.style.boxShadow = material.boxShadow;
+    shadow.style.opacity = fold ? '0' : '1';
+    root.append(shadow);
+    const actor = { root, shadow, crease, width: source.offsetWidth, height: source.offsetHeight, hinge: hingePosition, sides: [] };
+    const hingeOffset = `${hingePosition * 100}%`;
+    Object.assign(root.style, {
+      width: `${actor.width}px`, height: `${actor.height}px`,
+      perspectiveOrigin: `${hingeOffset} center`,
+      transform: pose(actor, fold ? alignSpine(actor, start) : start),
+    });
     for (const sign of [-1, 1]) {
       const page = document.createElement('div');
       page.className = sign === -1 ? 'paper-half paper-left' : 'paper-half paper-right';
       page.style.width = `${(sign === -1 ? hingePosition : 1 - hingePosition) * 100}%`;
-      if (sign === 1) page.style.left = `${hingePosition * 100}%`;
+      if (sign === 1) page.style.left = hingeOffset;
       page.style.transform = `rotateY(${sign * fold}deg)`;
       const copy = duplicatePaper(source);
       copy.style.width = `${actor.width}px`;
@@ -80,29 +96,34 @@ const playExhibitScene = (() => {
       page.append(copy);
       const shade = document.createElement('span');
       shade.className = 'paper-half-shade';
-      shade.style.opacity = fold ? '.76' : '0';
+      shade.style.opacity = Math.abs(fold) / 109;
       page.append(shade);
       actor.sides.push({ page, shade, sign });
       root.append(page);
     }
+    crease.className = 'paper-crease';
+    crease.style.left = hingeOffset;
+    crease.style.opacity = fold ? '1' : '0';
+    root.append(crease);
     shot.objects.append(root);
     return actor;
   }
 
-  function hinge(shot, actor, angles, duration, opening = false) {
-    const easing = opening ? settle : drift;
+  function hinge(shot, actor, angles, duration) {
     for (const { page, shade, sign } of actor.sides) {
-      play(shot, page, angles.map(([at, angle]) => ({ offset: at, transform: `rotateY(${angle * sign}deg)` })), duration, easing);
-      play(shot, shade, angles.map(([at, angle]) => ({ offset: at, opacity: Math.abs(angle) / 109 })), duration, easing);
+      play(shot, page, angles.map(([at, angle]) => ({ offset: at, transform: `rotateY(${angle * sign}deg)` })), duration);
+      play(shot, shade, angles.map(([at, angle]) => ({ offset: at, opacity: Math.abs(angle) / 109 })), duration);
     }
+    play(shot, actor.crease, angles.map(([at, angle]) => ({ offset: at, opacity: Math.max(0, (angle - 78) / 12) })), duration);
+    play(shot, actor.shadow, angles.map(([at, angle]) => ({ offset: at, opacity: Math.max(0, 1 - angle / 21) })), duration);
   }
 
   function darken(shot, duration) {
     return play(shot, shot.scrim, [{ opacity: 0 }, { opacity: .64, offset: .52 }, { opacity: 1 }], duration);
   }
 
-  function lightUp(shot, duration) {
-    return play(shot, shot.scrim, [{ opacity: 1 }, { opacity: .24, offset: .55 }, { opacity: 0 }], duration, pressure);
+  function lightUp(shot, duration, easing = pressure) {
+    return play(shot, shot.scrim, [{ opacity: 1 }, { opacity: .24, offset: .55 }, { opacity: 0 }], duration, easing);
   }
 
   function bringCaption(shot, caption, delay, distance = 12) {
@@ -126,7 +147,7 @@ const playExhibitScene = (() => {
     await play(shot, letter, [
       { transform: resting },
       { transform: `translate3d(-9px, -${travel}px, 0) rotateZ(-2deg) ${resting}` },
-    ], 275, settle);
+    ], 295);
   }
 
   async function approachSpine(shot, paper) {
@@ -136,8 +157,8 @@ const playExhibitScene = (() => {
     const width = Math.min(innerWidth * .63, 950);
     const spine = { x: innerWidth * .53, y: innerHeight * .48, width, height: Math.min(innerHeight * .65, width * .60), angle: -7 };
     const closer = { ...spine, x: from.x * .52 + spine.x * .48, y: (from.y + spine.y) / 2 - 14, width: (from.width + width) / 2, height: (from.height + spine.height) / 2, angle: -2 };
-    const duration = 555;
-    hinge(shot, actor, [[0, 0], [.33, 8], [.58, 34], [1, 86]], duration);
+    const duration = 595;
+    hinge(shot, actor, [[0, 0], [.28, 8], [.62, 43], [.86, 79], [1, 90]], duration);
     darken(shot, duration);
     await play(shot, actor.root, [
       { transform: pose(actor, from) }, { transform: pose(actor, closer), offset: .38 }, { transform: pose(actor, alignSpine(actor, spine)) },
@@ -146,22 +167,24 @@ const playExhibitScene = (() => {
   }
 
   async function unfoldPaper(shot, paper, folded) {
-    // The destination has already laid out, so the last frame is the real paper's position.
+    // Let the destination's resize observer paint its ink before the moving copy is taken.
+    await new Promise(requestAnimationFrame);
     await new Promise(requestAnimationFrame);
     if (shot.cancelled) return;
     const { spine } = folded;
     const target = paperGeometry(paper);
-    const actor = mountPaper(shot, paper, spine, 86);
+    // Both faces are edge-on here. Carry the same crease into the new paper.
+    const actor = mountPaper(shot, paper, spine, 90, folded.actor.crease);
     folded.actor.root.remove();
     concealPaper(shot, paper);
-    const near = { ...target, x: target.x - 25, y: target.y - 17, width: target.width * 1.037, height: target.height * 1.037, angle: target.angle - 1.3 };
-    hinge(shot, actor, [[0, 86], [.54, 23], [.86, -2.5], [1, 0]], 675, true);
-    lightUp(shot, 695);
+    const duration = 695;
+    hinge(shot, actor, [[0, 90], [.16, 85], [.44, 59], [.75, 14], [1, 0]], duration);
+    lightUp(shot, duration, drift);
     const chapter = paper.closest('.screen');
     const caption = chapter.querySelector('.chapter-copy, .opening-copy');
     const reframe = play(shot, actor.root, [
-      { transform: pose(actor, alignSpine(actor, spine)) }, { transform: pose(actor, near), offset: .64 }, { transform: pose(actor, target) },
-    ], 695, settle);
+      { transform: pose(actor, alignSpine(actor, spine)) }, { transform: pose(actor, target) },
+    ], duration);
     await Promise.all([reframe, bringCaption(shot, caption, 335)]);
   }
 
