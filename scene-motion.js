@@ -369,8 +369,8 @@ const playExhibitScene = (() => {
     concealPaper(shot, oldAtlas);
 
     const archive = document.querySelector('.archive');
-    archive.classList.add('archive-take', 'archive-packing');
-    shot.cleanups.push(() => archive.classList.remove('archive-take', 'archive-packing'));
+    archive.classList.add('archive-take', 'archive-packing', 'archive-flap-open');
+    shot.cleanups.push(() => archive.classList.remove('archive-take', 'archive-packing', 'archive-flap-open'));
     const aboveTable = { ...start, x: innerWidth * .602, y: innerHeight * .53, width: start.width * .78, height: start.height * .78, angle: -4.5 };
     const foldDuration = 675;
     const flight = play(shot, folded.root, [
@@ -430,6 +430,8 @@ const playExhibitScene = (() => {
       { transform: 'rotateX(90deg)', zIndex: 4, offset: .48 },
       { transform: 'rotateX(0deg)', zIndex: 4 },
     ], 555);
+    // Leave the flap closed in the resting style before the filled animation is cleared.
+    archive.classList.remove('archive-flap-open');
     insert.remove();
     const envelopeSettled = play(shot, envelope, [{ transform: held }, { transform: resting }], 438, settle);
     await Promise.all([

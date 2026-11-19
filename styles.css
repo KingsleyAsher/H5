@@ -111,12 +111,14 @@ h1, h2, h3, p, figure, ol { margin: 0; }
 .letter-display { position: relative; min-width: 0; padding: 0 4% 0 3%; isolation: isolate; }
 .letter-display::before { content: ""; position: absolute; z-index: -1; inset: -78% -33% -75% -35%; pointer-events: none; background: radial-gradient(ellipse at 59% 44%, #b0794526, #593c1f11 33%, transparent 65%); }
 .letter-display figcaption { position: absolute; right: 2%; bottom: -38px; color: var(--muted); font-size: clamp(12px, 1.13vw, 16px); letter-spacing: .1em; padding-bottom: 6px; border-bottom: 1px solid var(--rule); transition: transform 500ms var(--ease-out); }
-.envelope { --flap-shape: polygon(0 0, 100% 0, 100% 4%, 98.2% 10%, 52% 71.4%, 50.3% 73%, 48.4% 72.3%, 2.4% 11%, 0 5%); position: relative; aspect-ratio: 1656 / 861; margin: 0 auto; transform: rotate(-9deg) translateY(3%); transition: transform 590ms var(--ease-out); perspective: 1350px; }
+.envelope { --flap-shape: polygon(0 0, 100% 0, 100% 4%, 98.2% 10%, 52% 71.4%, 50.3% 73%, 48.4% 72.3%, 2.4% 11%, 0 5%); position: relative; aspect-ratio: 1656 / 861; margin: 0 auto; transform: rotate(-9deg) translateY(3%); perspective: 1350px; }
+.opening .envelope { transition: transform 590ms var(--ease-out); }
 .envelope::after { content: ""; position: absolute; z-index: -1; inset: 1% 0 0 1%; border-radius: 3%; box-shadow: -17px 33px 42px #000b, -6px 13px 13px #000a; }
 .envelope-lining, .envelope-pocket, .envelope-flap, .flap-side { position: absolute; inset: 0; }
 .envelope-lining { z-index: 0; border-radius: 1.9%; inset: 1% 1% .8%; background: linear-gradient(180deg, #2f170894, #2c170839 55%, #4a240566), url("assets/paper.webp") center / cover; }
 .envelope-pocket { z-index: 3; background: var(--envelope-texture) center / 100% 100% no-repeat; clip-path: polygon(0 4%, 2% 8%, 48.4% 68.6%, 50.3% 69.5%, 52% 68.3%, 98.5% 8%, 100% 3%, 100% 100%, 0 100%); }
-.envelope-flap { z-index: 4; transform-style: preserve-3d; transform-origin: 50% 1%; transition: transform 520ms var(--ease-in-out), z-index 0s 320ms; }
+.envelope-flap { z-index: 4; transform-style: preserve-3d; transform-origin: 50% 1%; }
+.opening .envelope-flap { transition: transform 520ms var(--ease-in-out), z-index 0s 320ms; }
 .flap-side { clip-path: var(--flap-shape); }
 .flap-front { z-index: 1; backface-visibility: hidden; background: var(--envelope-texture) center / 100% 100% no-repeat; }
 .flap-back { background: radial-gradient(ellipse at 68% 65%, #6b4c270f, #27110476), url("assets/paper.webp") top / cover; }
@@ -251,7 +253,7 @@ h1, h2, h3, p, figure, ol { margin: 0; }
 .archive .chapter-copy time { white-space: nowrap; }
 .archive-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; }
 .archive-display .envelope { width: 91%; transform: rotate(-7deg) translateY(4%); }
-.archive-packing .envelope-flap { z-index: 1; transform: rotateX(153deg); transition: none; }
+.archive-flap-open .envelope-flap { z-index: 1; transform: rotateX(153deg); }
 .archive-packing :is(.chapter-copy, .archive-display figcaption, .archive-sources) { opacity: 0; }
 .archive-stamp-mark { position: absolute; z-index: 6; top: 61%; left: 27%; width: max-content; transform: rotate(-8deg); pointer-events: none; }
 .archive-seal { color: #822b20; mix-blend-mode: multiply; border: .09em double currentColor; border-radius: 3px; padding: .02em .22em .09em .3em; font-size: clamp(30px, 4.1vw, 65px); font-weight: 800; line-height: 1.2; letter-spacing: .065em; opacity: .92; }
