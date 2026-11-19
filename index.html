@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#110e0c">
+  <meta name="description" content="读两封烽火中的五邑家书，沿着邮戳追踪一封从纽约寄往台山的战时银信。">
+  <title>烽火侨批 · 再送台山</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="mobile.css" media="(max-width: 959px)">
+  <link rel="preload" href="assets/turn-paper.webp" as="image">
+  <script defer src="scene-motion.js"></script>
+  <script defer src="exhibit.js"></script>
+  <script defer src="records.js"></script>
+  <script defer src="paper.js"></script>
+</head>
+<body>
+  <div class="exhibit" data-screen="envelope">
+    <header class="masthead">
+      <a class="wordmark" href="#envelope">烽火侨批 <span>·</span> 再送台山</a>
+      <nav aria-label="展览章节">
+        <a href="#envelope" aria-current="page">开封</a>
+        <a href="#silver">一纸银信</a>
+        <a href="#letters">烽火两岸</a>
+        <a href="#journey">追一封信</a>
+        <a href="#archive">留存</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="screen opening" id="opening-screen" data-chapter="envelope" aria-labelledby="opening-title">
+        <div class="opening-copy">
+          <h1 id="opening-title" tabindex="-1">烽火侨批<span>再送台山</span></h1>
+          <p class="era"><span aria-hidden="true"></span><time>1944</time>—<time>1946</time></p>
+          <p class="opening-question">一封信到了台山，为什么又被退回？</p>
+          <div class="opening-actions">
+            <button class="action" id="unseal" type="button">打开家书 <span aria-hidden="true">↗</span></button>
+            <div class="opened-actions" id="opened-actions" hidden>
+              <a class="action" href="#silver">一纸银信 <span aria-hidden="true">↗</span></a>
+              <button class="text-button" id="reseal" type="button">合上信封</button>
+            </div>
+          </div>
+        </div>
+
+        <figure class="letter-display" id="letter-display">
+          <div class="envelope" aria-hidden="true">
+            <div class="envelope-lining"></div>
+            <div class="letter-sheet">
+              <canvas class="paper-relief" data-paper="letter" aria-hidden="true"></canvas>
+              <div class="letter-rules">
+                <span class="sheet-date" data-paper-ink>一九四四年六月九日</span>
+                <strong data-paper-ink>纽约寄出</strong>
+                <span class="sheet-destination" data-paper-ink>广东台山收</span>
+              </div>
+            </div>
+            <div class="envelope-pocket"></div>
+            <div class="envelope-flap">
+              <div class="flap-side flap-front"></div>
+              <div class="flap-side flap-back"></div>
+            </div>
+          </div>
+          <p class="sr-only" id="letter-announcement" aria-live="polite"></p>
+          <figcaption>战时银信 · 情景示意</figcaption>
+        </figure>
+      </section>
+
+      <section class="screen silver" id="silver-screen" data-chapter="silver" aria-labelledby="silver-title" hidden>
+        <div class="chapter-grid">
+          <div class="chapter-copy">
+            <h2 class="chapter-title" id="silver-title" tabindex="-1">一纸银信</h2>
+            <p>在江门五邑，侨批多称「银信」。旅居海外的人把家书和寄给亲人的钱托送回乡。家人借一封信知道彼此平安，也靠这笔钱过日子。</p>
+            <p>1937 年，旅居古巴的李心礽收到妻子黄氏的来信，得知儿子出生。他写信回乡，和妻子商量取名，也托人转交信银。</p>
+            <p class="chapter-link-note">另一位父亲邝修录，也把对孩子的叮嘱写进了信。他叮嘱儿子及早备粮。</p>
+            <a class="action" href="#letters">读烽火中的家书 <span aria-hidden="true">↗</span></a>
+          </div>
+
+          <figure class="silver-spread">
+            <canvas class="paper-relief" data-paper="spread" aria-hidden="true"></canvas>
+            <div class="spread-meta"><time datetime="1937-02-20">1937.02.20</time><span>古巴哈瓦那 <span class="route-arrow" aria-hidden="true">→</span> 广东台山</span></div>
+            <div class="spread-leaves">
+              <section class="spread-leaf" aria-labelledby="silver-note">
+                <h3 id="silver-note">家书</h3>
+                <blockquote><span data-paper-ink>小孩子</span><span data-paper-ink>择取名家宏</span></blockquote>
+                <p>隔着大洋，父亲在信末写下他给孩子取的名字。</p>
+              </section>
+              <section class="spread-leaf" aria-labelledby="silver-money">
+                <h3 id="silver-money">侨汇</h3>
+                <p class="spread-quote" data-paper-ink>伍拾大元</p>
+                <p>他托人转交信银，也请对方代买鹿茸和两只腊鸭，给家人补养。</p>
+              </section>
+            </div>
+            <figcaption>李心礽致黄氏 · 据史料排印<a href="https://www.qb.gd.gov.cn/qwdt/content/post_1328000.html" target="_blank" rel="noopener noreferrer">史料出处 ↗</a></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="screen documents" id="letters-screen" data-chapter="letters" aria-labelledby="letters-title" hidden>
+        <header class="documents-head">
+          <h2 class="chapter-title" id="letters-title" tabindex="-1">烽火两岸</h2>
+          <p>一封从澳大利亚寄回台山，一封从台山寄向美国。两封家书里，各有一端的人在等待消息。</p>
+        </header>
+
+        <div class="document-pair">
+          <article class="letter-card">
+            <p class="letter-meta"><time datetime="1936-02-09">1936.02.09</time><span>澳大利亚 <span class="route-arrow" aria-hidden="true">→</span> 台山</span></p>
+            <h3>邝修录致儿子邝振成</h3>
+            <button class="record-trigger" type="button" aria-haspopup="dialog" aria-label="放大邝修录家书与释文" data-board="assets/letters/1936-board.jpg">
+              <span class="document-mount"><img src="assets/letters/1936-document.webp" width="1096" height="500" alt="展板刊载的 1936 年家书与信封正反面"></span>
+              <span class="record-caption"><span>家书与信封 · 放大看释文</span><span aria-hidden="true">↗</span></span>
+            </button>
+            <p class="letter-context">在澳大利亚，一位父亲从时局说到家事，叮嘱儿子及早准备粮食。</p>
+            <template class="record-reading">
+              <blockquote class="record-quote">世界大二次之大战，即在目前，此次大战，在于远东，我中国当其要冲，战场在于中国领土之上。</blockquote>
+              <h4>白话释义</h4>
+              <p>他担心新的世界大战即将爆发，认为中国会处在远东战事的关键位置。在同一封信中，他提醒儿子，战事一旦阻断交通，粮食可能买不到，应当早作准备。</p>
+              <p class="reader-credit"><span>原件图与节录据现场展板照片，展板署罗达全供图。</span><span>白话释义为本页编写。<a href="https://www.jiangmen.gov.cn/newzjqx/qdqq/hwqq/content/post_3410023.html" target="_blank" rel="noopener noreferrer">释义参考 ↗</a></span></p>
+            </template>
+          </article>
+
+          <article class="letter-card">
+            <p class="letter-meta"><time datetime="1941-03-10">1941.03.10</time><span>台山 <span class="route-arrow" aria-hidden="true">→</span> 美国</span></p>
+            <h3>桂明致美国华侨亲友</h3>
+            <button class="record-trigger" type="button" aria-haspopup="dialog" aria-label="放大桂明家书与释文" data-board="assets/letters/1941-board.jpg">
+              <span class="document-mount"><img src="assets/letters/1941-document.webp" width="700" height="443" alt="展板刊载的 1941 年桂明家书，两张红格信笺"></span>
+              <span class="record-caption"><span>放大原件与释文</span><span aria-hidden="true">↗</span></span>
+            </button>
+            <p class="letter-context">在台山，桂明写下村民逃难、日军入村劫掠和家中遭遇。</p>
+            <template class="record-reading">
+              <blockquote class="record-quote">人心惊惶，村民走乱纷纷，无家可居，妻子离散，<br>……凡村近冲蒌处，每日被日军入村屋劫掠，连鸡捉去……</blockquote>
+              <h4>白话释义</h4>
+              <p>桂明向海外亲友描述，日军占据台城、冲蒌和斗山后，村民仓皇逃难，家人离散。冲蒌附近村屋遭到劫掠，连家禽也被抢走。他还在信中记下了父亲受伤后去世的消息。</p>
+              <p class="reader-credit"><span>原件图与节录据现场展板照片，展板署关翌春供图。</span><span>白话释义为本页编写。<a href="https://pub.timedg.com/a/2025-12/05/AP6932ae6ae4b004aa4a5adc84.html" target="_blank" rel="noopener noreferrer">释义参考 ↗</a></span></p>
+            </template>
+          </article>
+        </div>
+
+        <footer class="chapter-tail">
+          <div>
+            <p><time datetime="1939-02-01">1939.02.01</time> · 谭裔熙等人在古巴哈瓦那为台山家乡募集港银一百六十五元，用于储粮。<a href="https://www.wyu.edu.cn/gdqx/info/1048/6728.htm" target="_blank" rel="noopener noreferrer">出处 ↗</a></p>
+            <p class="route-lead">信封上的地址和邮戳留下了寄递线索。接下来追踪另一封银信，<strong>纽约 → 台山</strong>。</p>
+          </div>
+          <a class="action" href="#journey">沿信封追邮路 <span aria-hidden="true">↗</span></a>
+        </footer>
+      </section>
+
+      <section class="screen journey" id="journey-screen" data-chapter="journey" aria-labelledby="journey-title" hidden>
+        <div class="journey-grid">
+          <div class="journey-copy">
+            <h2 id="journey-title" tabindex="-1">追一封信</h2>
+            <div class="event" id="event" aria-live="polite" aria-atomic="true">
+              <time class="event-date" id="event-date" datetime="1944-06-09">1944.06.09</time>
+              <h3 id="event-title">纽约寄出</h3>
+              <p id="event-description">这封银信在纽约挂号寄出，目的地是广东台山。次日，它在纽约接受检查并留下封口记录。</p>
+            </div>
+            <div class="journey-actions">
+              <button class="action action-next" id="next-event" type="button"><span>沿邮路前行</span><span aria-hidden="true">↗</span></button>
+              <a class="action action-next" id="journey-finish" href="#archive" hidden>收信入封 <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+
+          <figure class="atlas" id="atlas" data-step="0" aria-labelledby="map-caption">
+            <div class="map-paper">
+              <img class="map-base" src="assets/atlas.webp" alt="">
+              <canvas class="map-ink" id="map-ink" width="1000" height="584" aria-hidden="true"></canvas>
+              <span class="map-note map-atlantic" aria-hidden="true">大 西 洋</span>
+              <span class="map-note map-indian" aria-hidden="true">印 度 洋</span>
+              <span class="map-city city-ny">纽约</span>
+              <span class="map-city city-hump">驼峰航线</span>
+              <span class="map-city city-cq">重庆</span>
+              <span class="map-city city-ts">台山</span>
+              <div class="stamp-slot" aria-hidden="true"><div class="stamp" id="map-stamp"></div></div>
+              <div class="inset" id="delta-inset" aria-label="珠江口局部。广州至台山的再次投递。">
+                <span class="inset-region">珠江口 · 局部示意</span>
+                <img src="assets/delta.webp" alt="">
+                <div class="inset-line"></div>
+                <span class="inset-point inset-gz">广州</span>
+                <span class="inset-point inset-ts">台山</span>
+              </div>
+              <figcaption id="map-caption">纽约至台山｜邮路与印记示意 · 跨洋段转运细节从略</figcaption>
+            </div>
+          </figure>
+        </div>
+
+        <div class="route-footer">
+          <ol class="timeline" aria-label="邮路节点">
+            <li><button data-step="0" type="button" aria-current="step"><span class="timeline-dot"></span>寄出</button></li>
+            <li><button data-step="1" type="button"><span class="timeline-dot"></span>过驼峰</button></li>
+            <li><button data-step="2" type="button"><span class="timeline-dot"></span>到达台山</button></li>
+            <li><button data-step="3" type="button"><span class="timeline-dot"></span>退回</button></li>
+            <li><button data-step="4" type="button"><span class="timeline-dot"></span>再送台山</button></li>
+          </ol>
+          <p class="source"><a href="https://pc.nfnews.com/42402/10161739.html" target="_blank" rel="noopener noreferrer">史料来源 · 李柏达访谈</a><span aria-hidden="true"> / </span><a href="https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-land/" target="_blank" rel="noopener noreferrer">底图数据 · Natural Earth</a></p>
+        </div>
+      </section>
+
+      <section class="screen archive" id="archive-screen" data-chapter="archive" aria-labelledby="archive-title" hidden>
+        <div class="chapter-grid">
+          <div class="chapter-copy">
+            <h2 class="chapter-title" id="archive-title" tabindex="-1">留存</h2>
+            <p class="archive-lead">一封信送到以后，故事还留在纸上。</p>
+            <p>写给亲人的叮嘱、寄回去的钱、信封上一次次盖下的邮戳，留下了华侨与侨乡的生活。<time datetime="2013">2013 年</time>，「侨批档案——海外华侨银信」入选联合国教科文组织《世界记忆名录》。</p>
+            <div class="archive-actions">
+              <a class="action" href="#letters">重读两封家书 <span aria-hidden="true">↗</span></a>
+              <a class="text-button" href="#envelope">回到开封</a>
+            </div>
+          </div>
+
+          <figure class="letter-display archive-display">
+            <div class="envelope" aria-hidden="true">
+              <div class="envelope-lining"></div>
+              <div class="envelope-pocket"></div>
+              <div class="envelope-flap">
+                <div class="flap-side flap-front"></div>
+                <div class="flap-side flap-back"></div>
+              </div>
+              <div class="archive-stamp-mark">
+                <div class="archive-seal">再送台山</div>
+                <div class="archive-stamp-shadow" hidden></div>
+                <div class="archive-stamp-tool" hidden>
+                  <span class="stamp-tool-base"></span>
+                  <span class="stamp-tool-handle"></span>
+                </div>
+              </div>
+            </div>
+            <figcaption>1946.11.09 · 广州邮局批注示意</figcaption>
+          </figure>
+        </div>
+
+        <details class="archive-sources">
+          <summary>展览照片与史料来源</summary>
+          <ul>
+            <li><span>展览照片</span><span>《烽火侨批》展览现场拍摄。可在「烽火两岸」查看未经裁切的整张照片。</span></li>
+            <li><span>一纸银信</span><a href="https://www.jiangmen.gov.cn/bmpd/jmswhgdlytyj/ztzl/ggwh/ggwhzx/content/post_3491332.html" target="_blank" rel="noopener noreferrer">江门市文广旅体局 · 李心礽从古巴寄台山的银信 ↗</a></li>
+            <li><span>烽火两岸</span><a href="https://www.wyu.edu.cn/gdqx/info/1048/6728.htm" target="_blank" rel="noopener noreferrer">五邑大学刊载的《读懂烽火侨批》 ↗</a></li>
+            <li><span>追一封信</span><a href="https://pc.nfnews.com/42402/10161739.html" target="_blank" rel="noopener noreferrer">南方日报 · 台山银信收藏研究者李柏达访谈 ↗</a></li>
+            <li><span>留存</span><a href="https://www.unesco.org/en/memory-world/qiaopi-and-yinxin-correspondence-and-remittance-documents-overseas-chinese" target="_blank" rel="noopener noreferrer">联合国教科文组织《世界记忆名录》 · 侨批档案 ↗</a></li>
+          </ul>
+        </details>
+      </section>
+    </main>
+
+    <div class="chapter-film" id="chapter-film" aria-hidden="true" inert hidden>
+      <div class="film-scrim"></div>
+      <div class="film-objects"></div>
+    </div>
+
+    <dialog class="record-viewer" id="record-viewer" aria-labelledby="reader-title" aria-modal="true" data-pane="image">
+      <header class="reader-head">
+        <div><p id="reader-meta"></p><h2 id="reader-title"></h2></div>
+        <button class="reader-close" id="reader-close" type="button" aria-label="关闭家书阅读窗" autofocus>×</button>
+      </header>
+      <div class="reader-pane-picker" role="group" aria-label="家书阅读方式">
+        <button type="button" data-reader-pane="image" aria-pressed="true">原件</button>
+        <button type="button" data-reader-pane="text" aria-pressed="false">释文</button>
+      </div>
+      <div class="reader-layout">
+        <div class="reader-picture">
+          <div class="reader-toolbar">
+            <div class="reader-tools" aria-label="照片范围" role="group">
+              <button type="button" data-image-view="document" aria-pressed="true">展品局部</button>
+              <button type="button" data-image-view="board" aria-pressed="false">展板全图</button>
+            </div>
+            <div class="reader-tools zoom-tools" aria-label="图像缩放" role="group">
+              <button type="button" id="zoom-out" aria-label="缩小家书">−</button>
+              <button type="button" id="zoom-reset" aria-label="缩放适合窗口" title="适合窗口"><span id="zoom-level">100%</span></button>
+              <button type="button" id="zoom-in" aria-label="放大家书">+</button>
+            </div>
+          </div>
+          <div class="reader-viewport" id="reader-viewport" tabindex="0" aria-label="家书照片，放大后可拖动或使用方向键查看">
+            <div class="reader-image-frame" id="reader-image-frame"><img id="reader-image" alt="" draggable="false"></div>
+          </div>
+          <p class="reader-image-note" id="reader-image-note">照片摄于展览现场。放大后可拖动查看细节。</p>
+        </div>
+        <section class="reader-transcript" aria-labelledby="reader-transcript-title" tabindex="0">
+          <h3 class="reading-head" id="reader-transcript-title">释文</h3>
+          <p class="excerpt-label">展板节录</p>
+          <div id="reader-reading"></div>
+        </section>
+      </div>
+    </dialog>
+  </div>
+</body>
+</html>
